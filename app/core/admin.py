@@ -5,6 +5,7 @@ from django.utils.timezone import localtime  # Chuyển đổi múi giờ
 
 from core import models
 
+
 class UserAdmin(BaseUserAdmin):
     """Define the admin pages for users."""
     ordering = ['id']
@@ -29,7 +30,7 @@ class UserAdmin(BaseUserAdmin):
     def formatted_last_login(self, obj):
         """Hiển thị thời gian đăng nhập theo múi giờ Việt Nam."""
         if obj.last_login:
-            return localtime(obj.last_login).strftime('%d/%m/%Y %H:%M:%S')  # Format ngày giờ
+            return localtime(obj.last_login).strftime('%d/%m/%Y %H:%M:%S')
         return '-'
 
     formatted_last_login.short_description = "Lần đăng nhập cuối"
@@ -48,5 +49,6 @@ class UserAdmin(BaseUserAdmin):
             ),
         }),
     )
+
 
 admin.site.register(models.User, UserAdmin)
