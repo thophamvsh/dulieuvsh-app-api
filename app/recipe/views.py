@@ -1,15 +1,22 @@
 """
 Views for the recipe APIs
 """
-from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter, OpenApiTypes
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes,
+    )
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+
 from core.models import Recipe, Tag, Ingredient
 from recipe import serializers
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -27,8 +34,6 @@ from recipe import serializers
         ]
     )
 )
-
-
 class RecipeViewSet(viewsets.ModelViewSet):
     """Views for manage recipe APIs."""
     serializer_class = serializers.RecipeDetailSerializer
@@ -62,13 +67,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return serializers.RecipeSerializer
         elif self.action == 'upload_image':
             return serializers.RecipeImageSerializer
-
         return self.serializer_class
 
     def perform_create(self, serializer):
         """Create a new recipe."""
         serializer.save(user=self.request.user)
-
 
     @action(methods=['POST'], detail=True, url_path='upload-image')
     def upload_image(self, request, pk=None):
@@ -94,7 +97,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ]
     )
 )
-
 class BaseRecipeAttrViewSet(mixins.DestroyModelMixin,
                             mixins.UpdateModelMixin,
                             mixins.ListModelMixin,

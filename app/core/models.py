@@ -13,6 +13,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 
+
 def recipe_image_file_path(instance, filename):
     """Generate file path for new recipe image."""
     ext = os.path.splitext(filename)[1]
@@ -55,6 +56,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
+
 class Recipe(models.Model):
     """Recipe object."""
     user = models.ForeignKey(
@@ -85,6 +87,7 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+
 class Ingredient(models.Model):
     """Ingredient for recipes."""
     name = models.CharField(max_length=255)
@@ -95,3 +98,51 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Nhatkysukien(models.Model):
+    """Sổ nhật ký sự kiện"""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    title = models.CharField(max_length=255)
+    Thoigian = models.DateTimeField(null=True, blank=True)
+    Hethong_Thietbi = models.TextField(blank=True)
+    Hientuong_Dienbien = models.TextField(blank=True)
+    Phantich_Nguyennhan = models.TextField(blank=True)
+    Quatrinh_Kt = models.TextField(blank=True)
+    LoaiSc = models.TextField(blank=True)
+    Baocao_Chidao = models.TextField(blank=True)
+    DeNghi = models.TextField(blank=True)
+    CaVanHanh = models.TextField(blank=True)
+    Donvi_khacPhuc = models.TextField(blank=True)
+    # Không cần xulysukientbs ở đây nữa
+    xulysukientbs = models.ManyToManyField('Xulysukientb', blank=True)
+
+    def __str__(self):
+        return self.title
+
+
+class Xulysukientb(models.Model):
+    """Xử lý cho nhật ký sự kiện"""
+    title = models.CharField(max_length=255, blank=True)
+    Tomay = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+
+    Noidung_xuly = models.TextField(blank=True)
+    Thoigian_xuly = models.DateTimeField(null=True, blank=True)
+    Quatrinh_kiemtra = models.TextField(blank=True)
+    Dexuat_lienquan = models.TextField(blank=True)
+    Chidao = models.TextField(blank=True)
+    Tinhtrang_xuly = models.TextField(blank=True)
+    Quatrinh_Xuly = models.TextField(blank=True)
+    Phantich_Nguyennhan_Xl = models.TextField(blank=True)
+    Donvi_ghinhan = models.TextField(blank=True)
+    Cavanhanh_ghinhan = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.title if self.title else "Xử lý sự kiện"

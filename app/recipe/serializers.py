@@ -23,6 +23,7 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
         read_only_fields = ['id']
 
+
 class RecipeSerializer(serializers.ModelSerializer):
     """Serializer for recipes."""
     tags = TagSerializer(many=True, required=False)
@@ -30,7 +31,11 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ['id', 'title', 'time_minutes', 'price', 'link', 'tags', 'ingredients', 'image']
+        fields = [
+            'id', 'title', 'time_minutes',
+            'price', 'link', 'tags',
+            'ingredients', 'image'
+            ]
         read_only_fields = ['id']
 
     def _get_or_create_tags(self, tags, recipe):
@@ -52,7 +57,6 @@ class RecipeSerializer(serializers.ModelSerializer):
                 **ingredient,
             )
             recipe.ingredients.add(ingredient_obj)
-
 
     def create(self, validated_data):
         """Create a recipe."""
@@ -77,9 +81,9 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
-
         instance.save()
         return instance
+
 
 class RecipeDetailSerializer(RecipeSerializer):
     """Serializer for recipe detail view."""

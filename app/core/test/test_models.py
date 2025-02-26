@@ -3,6 +3,7 @@ Tests for models.
 """
 from unittest.mock import patch
 from decimal import Decimal
+from datetime import datetime
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
@@ -13,9 +14,9 @@ def create_user(email='user@example.com', password='testpass123'):
     """Create a return a new user."""
     return get_user_model().objects.create_user(email, password)
 
+
 class ModelTests(TestCase):
     """Test models."""
-
     def test_create_user_with_email_successful(self):
         """Test creating a user with an email is successful."""
         email = 'test@example.com'
@@ -97,3 +98,37 @@ class ModelTests(TestCase):
         file_path = models.recipe_image_file_path(None, 'example.jpg')
 
         self.assertEqual(file_path, f'uploads/recipe/{uuid}.jpg')
+
+    def test_create_nhatkysukien(self):
+        """Test tạo nhật ký sự kiện trước, sau đó thêm xử lý sự kiện"""
+        user = get_user_model().objects.create_user(
+            'test@example.com',
+            'testpass123',
+        )
+
+        # Bước 1: Tạo `Nhatkysukien` trước, chưa có `Xulysukientb`
+        nhatkysukien = models.Nhatkysukien.objects.create(
+            user=user,
+            title='Mẫu nhật ký sự kiện',
+            Thoigian=datetime.strptime('2025-05-24', '%Y-%m-%d').date(),
+            Hethong_Thietbi='Hệ thống cơ khí',
+            Hientuong_Dienbien='Tiếng ồn lớn khi vận hành',
+        )
+        # Tạo các biến riêng cho chuỗi thời gian và định dạng
+        time_string = '2025-05-24 12:00:00'
+        time_format = '%Y-%m-%d %H:%M:%S'
+        Thoigian_xuly = datetime.strptime(time_string, time_format)
+
+        # Bước 2: Đảm bảo `Xulysukientb` được tạo
+        xulysukientb = models.Xulysukientb.objects.create(
+            user=user,
+            title='Mẫu xử lý sự kiện',
+            Tomay='Hệ thống máy xử lý',
+            Noidung_xuly='Xử lý lỗi phần cứng',
+            Thoigian_xuly=Thoigian_xuly,
+        )
+        # Bước 3: Liên kết `Nhatkysukien` với `Xulysukientb`
+        nhatkysukien.xulysukientbs.add(xulysukientb)
+        # Kiểm tra xem đối tượng có được liên kết chính xác không
+        self.assertEqual(nhatkysukien.xulysukientbs.count(), 1)
+        self.assertIn(xulysukientb, nhatkysukien.xulysukientbs.all())

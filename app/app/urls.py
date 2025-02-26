@@ -36,6 +36,7 @@ urlpatterns = [
     ),
     path('api/user/', include('user.urls')),
     path('api/recipe/', include('recipe.urls')),
+    path('api/nhatkysukien/', include('nhatkysukien.urls')),
 ]
 
 if settings.DEBUG:

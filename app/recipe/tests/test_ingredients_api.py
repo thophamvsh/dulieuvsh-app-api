@@ -96,7 +96,6 @@ class PrivateIngredientsApiTests(TestCase):
         ingredients = Ingredient.objects.filter(user=self.user)
         self.assertFalse(ingredients.exists())
 
-
     def test_filter_ingredients_assigned_to_recipes(self):
         """Test listing ingedients to those assigned to recipes."""
         in1 = Ingredient.objects.create(user=self.user, name='Apples')

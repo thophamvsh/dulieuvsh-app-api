@@ -21,6 +21,11 @@ def create_user(**param):
 
 class PublicUserAPiTest(TestCase):
     """Test the public features of the user API."""
+
+    def setUp(self):
+        # Vô hiệu hóa CSRF trong kiểm thử
+        self.client = APIClient(enforce_csrf_checks=False)
+
     def test_create_user_success(self):
         """Test creating a user is successful."""
         payload = {
@@ -115,13 +120,14 @@ class PublicUserAPiTest(TestCase):
 
 class PrivateUserApiTests(TestCase):
     """Test API requests that require authentication."""
-
     def setUp(self):
         self.user = create_user(
             email='test@example.com',
             password='testpass123',
             name='Test Name',
         )
+        # Vô hiệu hóa CSRF trong kiểm thử
+        self.client = APIClient(enforce_csrf_checks=False)
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
